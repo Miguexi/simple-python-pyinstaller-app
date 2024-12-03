@@ -1,10 +1,24 @@
 pipeline {
-    agent any 
+    agent {
+        docker {
+            image 'python:3.10-slim'
+        }
+    }
     stages {
-        stage('Build') { 
+        stage('Install dependencies') {
             steps {
-                sh 'python -m py_compile sources/add2vals.py sources/calc.py' 
-                stash(name: 'compiled-results', includes: 'sources/*.py*') 
+                sh 'pip install --upgrade pip'
+                sh 'pip install pyinstaller'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'pyinstaller --onefile your_script.py'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'python -m unittest discover'
             }
         }
     }
