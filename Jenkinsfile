@@ -1,10 +1,11 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.10-slim'
-        }
-    }
+    agent any
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Install dependencies') {
             steps {
                 sh 'pip install --upgrade pip'
@@ -13,7 +14,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                sh 'pyinstaller --onefile your_script.py'
+                sh 'pyinstaller --onefile hello.py'
             }
         }
         stage('Test') {
@@ -23,3 +24,4 @@ pipeline {
         }
     }
 }
+
